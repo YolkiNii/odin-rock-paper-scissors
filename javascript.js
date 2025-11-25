@@ -1,24 +1,30 @@
-console.log("Hello World");
-
 function getComputerChoice() {
-    const choice = Math.floor(Math.random() * 3)
-    let outcome = ""
+    const computerChoice = Math.floor(Math.random() * 3);
+    let outcome = "";
 
-    switch(choice) {
+    switch(computerChoice) {
         case 0:
-            outcome = "rock"
-            break
+            outcome = "rock";
+            break;
         case 1:
-            outcome = "paper"
-            break
+            outcome = "paper";
+            break;
         case 2:
-            outcome = "scissors"
-            break
+            outcome = "scissors";
+            break;
         default:
-            outcome = "rock"
+            outcome = "rock";
     }
 
-    return outcome
+    return outcome;
 }
 
+function getHumanChoice() {
+    const humanChoice = prompt("Choose rock, paper, or scissors.");
+
+    return humanChoice;
+}
+
+console.log("Hello World");
+console.log(getHumanChoice())
 console.log(getComputerChoice())
