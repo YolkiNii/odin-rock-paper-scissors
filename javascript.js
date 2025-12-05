@@ -24,62 +24,78 @@ function getHumanChoice() {
 
     return humanChoice;
 }
+let humanScore = 0;
+let computerScore = 0;
 
-function playGame() {
-    let humanScore = 0;
-    let computerScore = 0;
+function playRound(humanChoice, computerChoice) {
+    const humanChoiceLowered = humanChoice.toLowerCase();
+    const resultReport = document.querySelector("#results");
 
-    function playRound(humanChoice, computerChoice) {
-        const humanChoiceLowered = humanChoice.toLowerCase();
-
-        if (humanChoiceLowered === computerChoice) {
-            console.log(
-                `You and the computer both picked "${humanChoiceLowered}". It's a draw!`
-            );
-            return;
-        }
-
-        if (
-            (humanChoiceLowered === "rock" && computerChoice === "scissors") || 
-            (humanChoiceLowered === "scissors" && computerChoice === "paper") ||
-            (humanChoiceLowered === "paper" && computerChoice === "rock")
-        ) {
-            console.log(
-                `You won! You chose ${humanChoiceLowered}, the computer chose ${computerChoice}.`
-            );
-            humanScore++;
-        }
-        else {
-            console.log(
-                `You lost! You chose ${humanChoiceLowered}, the computer chose ${computerChoice}.`
-            )
-            computerScore++;
-        }
-
-        return;
+    if (humanChoiceLowered === computerChoice) {
+        resultReport.textContent = `You and the computer both picked "${humanChoiceLowered}". It's a draw!`
+        return "draw";
     }
 
-    playRound(getHumanChoice(), getComputerChoice());
-    playRound(getHumanChoice(), getComputerChoice());
-    playRound(getHumanChoice(), getComputerChoice());
-    playRound(getHumanChoice(), getComputerChoice());
-    playRound(getHumanChoice(), getComputerChoice());
+    if (
+        (humanChoiceLowered === "rock" && computerChoice === "scissors") || 
+        (humanChoiceLowered === "scissors" && computerChoice === "paper") ||
+        (humanChoiceLowered === "paper" && computerChoice === "rock")
+    ) {
+        resultReport.textContent = `You won! You chose ${humanChoiceLowered}, the computer chose ${computerChoice}.`;
+        return "human";
+    }
+    resultReport.textContent = `You lost! You chose ${humanChoiceLowered}, the computer chose ${computerChoice}.`
 
-    if (humanScore > computerScore) {
-        console.log("You won with a score of " + humanScore + "!");
-    }
-    else if (humanScore < computerScore) {
-        console.log(
-            "You lost, the computer scored " + computerScore +
-            " and you scored " + humanScore + "."
-        )
-    }
-    else {
-        console.log(
-            "You and the computer both scored " + humanScore + ", " +
-            "the game is a draw."
-        );
-    }
+    return "computer";
 }
 
-playGame();
+function createSelectionButtons() {
+    const selections = ["Rock", "Paper", "Scissors"];
+
+    const selectionBtns = selections.map((selection) => {
+        const selectionBtn = document.createElement("button");
+        selectionBtn.textContent = selection;
+        return selectionBtn
+    });
+
+    return selectionBtns;
+}
+
+const body = document.querySelector("body");
+const selectionsContainer = document.createElement("div")
+const selectionButtons = createSelectionButtons();
+
+for (const selection of selectionButtons) {
+    selectionsContainer.appendChild(selection);
+}
+body.appendChild(selectionsContainer);
+selectionsContainer.addEventListener("click", (event) => {
+    const selection = event.target.textContent;
+    const resultReport = document.querySelector("#results");
+    switch (playRound(selection, getComputerChoice())) {
+        case "human":
+            humanScore++;
+            break;
+        case "computer":
+            computerScore++;
+            break;
+    };
+
+    if (humanScore === 5 || computerScore === 5) {
+        if (humanScore > computerScore) {
+            resultReport.textContent = "You won with a score of " + humanScore + "!";
+        }
+        else {
+            resultReport.textContent = "You lost, the computer scored " + computerScore +
+                " and you scored " + humanScore + "."
+        }
+        humanScore = 0;
+        computerScore = 0;
+    }
+    else {
+        ongoingScores = document.createTextNode(
+            ` Your score: ${humanScore} Computer score: ${computerScore}.`
+        )
+        resultReport.appendChild(ongoingScores);
+    }
+});
